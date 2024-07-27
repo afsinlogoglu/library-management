@@ -1,0 +1,34 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id             Int      @id @default(autoincrement())
+  name           String
+  borrowedBooks  Borrow[]
+  createdAt      DateTime @default(now())
+}
+
+model Book {
+  id            Int      @id @default(autoincrement())
+  name          String
+  averageRating Float    @default(0)
+  borrowRecords Borrow[]
+}
+
+model Borrow {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  bookId     Int
+  borrowedAt DateTime @default(now())
+  returnedAt DateTime?
+  rating     Float?
+  user       User     @relation(fields: [userId], references: [id])
+  book       Book     @relation(fields: [bookId], references: [id])
+}
+
